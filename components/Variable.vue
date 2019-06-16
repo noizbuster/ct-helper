@@ -22,35 +22,87 @@
 
     <!-- integer -->
     <div v-if="selectedMode === 'integer'">
+      <div v-if="!isRandom">
+        <h1>Manual Mode</h1>
+        <v-text-field
+          v-model="manualInput"
+          :rules="number"
+          label="ManualInput"
+          required
+        ></v-text-field>
+      </div>
       <div v-if="isRandom">
         <h1>when random</h1>
-        <v-btn @click="min = 1; max = Number.MAX_SAFE_INTEGER">Natural Number</v-btn>
-        <v-btn @click="min = 0; max = Number.MAX_SAFE_INTEGER">Whole Number</v-btn>
-        <v-btn @click="min = Number.MIN_SAFE_INTEGER; max = 0">Negative Integer</v-btn>
 
-        sparse number percentage
+        <v-radio-group v-model="isRandomInRange" row>
+          <v-radio
+            label="In range"
+            :value="true"
+          ></v-radio>
+          <v-radio
+            label="In Domain"
+            :value="false"
+          ></v-radio>
+        </v-radio-group>
 
-        <v-text-field
-          v-model="min"
-          :rules="number"
-          label="Minumum"
-          required
-        ></v-text-field>
-        int min
-        <v-text-field
-          v-model="max"
-          :rules="number"
-          label="Maximum"
-          required
-        ></v-text-field>
-        int max
+        <div v-if="isRandomInRange">
+          <v-btn @click="min = 1; max = Number.MAX_SAFE_INTEGER">Natural Number</v-btn>
+          <v-btn @click="min = 0; max = Number.MAX_SAFE_INTEGER">Whole Number</v-btn>
+          <v-btn @click="min = Number.MIN_SAFE_INTEGER; max = 0">Negative Integer</v-btn>
+
+          <v-text-field
+            v-model="min"
+            :rules="number"
+            label="Minumum"
+            required
+          ></v-text-field>
+          <v-text-field
+            v-model="max"
+            :rules="number"
+            label="Maximum"
+            required
+          ></v-text-field>
+        </div>
+
+        <div v-if="!isRandomInRange">
+          <v-text-field
+            v-model="domains"
+            :rules="number"
+            label="Custom Domain"
+            required
+          ></v-text-field>
+        </div>
+        <v-checkbox v-model="isSparse" label="Sparse"></v-checkbox>
+        <div v-if="isSparse">
+          <h2>Sparse</h2>
+          <v-text-field
+            v-model="sparseDensity"
+            :rules="number"
+            label="Sparse Density"
+            required
+          ></v-text-field>
+          <v-text-field
+            v-model="sparseBase"
+            :rules="number"
+            label="Sparse Base Value"
+            required
+          ></v-text-field>
+        </div>
       </div>
-      <div v-if="isArray">
+      <div v-if="isArray && isRandom">
         <h1>when array</h1>
         <v-text-field
           v-model="howMany"
           :rules="number"
-          label="Maximum"
+          label="Number of Integer"
+          required
+        ></v-text-field>
+        <v-checkbox v-model="is2DArray" label="2D Array"></v-checkbox>
+        <v-text-field
+          v-if="is2DArray"
+          v-model="howManyY"
+          :rules="number"
+          label="Y-Axis of 2D array"
           required
         ></v-text-field>
       </div>
@@ -86,10 +138,16 @@ export default {
       ],
       selectedMode: 'integer',
       isArray: true,
+      is2DArray: false,
       isRandom: true,
+      isRandomInRange: true,
+      isSparse: false,
+      sparseDensity: 0.1,
+      sparseBase: 0,
       min: 0,
       max: 10000,
       howMany: 10,
+      howManyY: 10,
       output: null
     }
   },
@@ -98,9 +156,27 @@ export default {
       const randoms = []
       switch (this.selectedMode) {
         case 'integer':
+          if (!this.isRandom) {
+            try {
+              this.output = JSON.parse(this.manualInput)
+            } catch (e) {
+              this.output = { msg: 'failed to parse into json from ' + this.manualInput }
+            }
+            break
+          }
           if (this.isArray) {
-            for (let i = 0; i < this.howMany; i++) {
-              randoms.push(this.getRandomInt(this.min, this.max))
+            if (this.is2DArray) {
+              for (let y = 0; y < this.howManyY; y++) {
+                const subRandoms = []
+                for (let i = 0; i < this.howMany; i++) {
+                  subRandoms.push(this.getRandomInt(this.min, this.max))
+                }
+                randoms.push(subRandoms)
+              }
+            } else {
+              for (let i = 0; i < this.howMany; i++) {
+                randoms.push(this.getRandomInt(this.min, this.max))
+              }
             }
             /* eslint no-console:0 */
             console.log('randoms', randoms)
