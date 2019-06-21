@@ -2,10 +2,10 @@
   <div>
     <v-layout row wrap>
       <v-flex>
-        <v-checkbox v-model="isRandom" label="Random"></v-checkbox>
+        <v-checkbox v-model="isRandom" label="Random" />
       </v-flex>
       <v-flex>
-        <v-checkbox v-model="isArray" label="Array"></v-checkbox>
+        <v-checkbox v-model="isArray" label="Array" />
       </v-flex>
       <v-flex>
         <v-radio-group v-model="selectedMode" row>
@@ -15,7 +15,7 @@
             :label="`${n.label}`"
             :value="n.value"
             :disabled="n.disabled"
-          ></v-radio>
+          />
         </v-radio-group>
       </v-flex>
     </v-layout>
@@ -29,39 +29,54 @@
           :rules="number"
           label="ManualInput"
           required
-        ></v-text-field>
+        />
       </div>
       <div v-if="isRandom">
         <h1>when random</h1>
 
         <v-radio-group v-model="isRandomInRange" row>
-          <v-radio
-            label="In range"
-            :value="true"
-          ></v-radio>
-          <v-radio
-            label="In Domain"
-            :value="false"
-          ></v-radio>
+          <v-radio label="In range" :value="true" />
+          <v-radio label="In Domain" :value="false" />
         </v-radio-group>
 
         <div v-if="isRandomInRange">
-          <v-btn @click="min = 1; max = Number.MAX_SAFE_INTEGER">Natural Number</v-btn>
-          <v-btn @click="min = 0; max = Number.MAX_SAFE_INTEGER">Whole Number</v-btn>
-          <v-btn @click="min = Number.MIN_SAFE_INTEGER; max = 0">Negative Integer</v-btn>
+          <v-btn
+            @click="
+              min = 1;
+              max = Number.MAX_SAFE_INTEGER;
+            "
+          >
+            Natural Number
+          </v-btn>
+          <v-btn
+            @click="
+              min = 0;
+              max = Number.MAX_SAFE_INTEGER;
+            "
+          >
+            Whole Number
+          </v-btn>
+          <v-btn
+            @click="
+              min = Number.MIN_SAFE_INTEGER;
+              max = 0;
+            "
+          >
+            Negative Integer
+          </v-btn>
 
           <v-text-field
             v-model="min"
             :rules="number"
             label="Minumum"
             required
-          ></v-text-field>
+          />
           <v-text-field
             v-model="max"
             :rules="number"
             label="Maximum"
             required
-          ></v-text-field>
+          />
         </div>
 
         <div v-if="!isRandomInRange">
@@ -70,9 +85,9 @@
             :rules="number"
             label="Custom Domain"
             required
-          ></v-text-field>
+          />
         </div>
-        <v-checkbox v-model="isSparse" label="Sparse"></v-checkbox>
+        <v-checkbox v-model="isSparse" label="Sparse" />
         <div v-if="isSparse">
           <h2>Sparse</h2>
           <v-text-field
@@ -80,13 +95,13 @@
             :rules="number"
             label="Sparse Density"
             required
-          ></v-text-field>
+          />
           <v-text-field
             v-model="sparseBase"
             :rules="number"
             label="Sparse Base Value"
             required
-          ></v-text-field>
+          />
         </div>
       </div>
       <div v-if="isArray && isRandom">
@@ -96,15 +111,15 @@
           :rules="number"
           label="Number of Integer"
           required
-        ></v-text-field>
-        <v-checkbox v-model="is2DArray" label="2D Array"></v-checkbox>
+        />
+        <v-checkbox v-model="is2DArray" label="2D Array" />
         <v-text-field
           v-if="is2DArray"
           v-model="howManyY"
           :rules="number"
           label="Y-Axis of 2D array"
           required
-        ></v-text-field>
+        />
       </div>
       integer mode
     </div>
@@ -116,7 +131,9 @@
     <div v-if="selectedMode === 'string'">
       string mode
     </div>
-    <v-btn @click="generate()">Generate</v-btn>
+    <v-btn @click="generate()">
+      Generate
+    </v-btn>
     <pre>
       {{ JSON.stringify(output) }}
     </pre>
